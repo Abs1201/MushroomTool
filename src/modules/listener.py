@@ -72,6 +72,7 @@ class Listener(Configurable):
         """Resumes or pauses the current routine. Plays a sound to notify the user."""
 
         config.bot.rune_active = False
+        config.need_return = False
 
         if not config.enabled:
             Listener.recalibrate_minimap()      # Recalibrate only when being enabled.

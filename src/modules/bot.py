@@ -16,6 +16,7 @@ from src.command_book.command_book import CommandBook
 from src.routine.components import Point
 from src.common.vkeys import press, click
 from src.common.interfaces import Configurable
+from src.modules.notifier import Notifier
 
 
 # The rune's buff icon
@@ -27,7 +28,8 @@ class Bot(Configurable):
 
     DEFAULT_CONFIG = {
         'Interact': 'space',
-        'Feed pet': '.'
+        'Feed pet': '.',
+        'Return scroll' : 's',
     }
 
     def __init__(self):
@@ -54,6 +56,7 @@ class Bot(Configurable):
         self.ready = False
         self.thread = threading.Thread(target=self._main)
         self.thread.daemon = True
+        self.notifier = Notifier()
 
     def start(self):
         """
@@ -80,15 +83,22 @@ class Bot(Configurable):
         last_fed = time.time()
         while True:
             if config.enabled and len(config.routine) > 0:
-                # Buff and feed pets
+                # Buff and feed pets and auto_return
                 self.command_book.buff.main()
                 pet_settings = config.gui.settings.pets
+                playerDetection_settings = config.gui.settings.playerDetection
                 auto_feed = pet_settings.auto_feed.get()
                 num_pets = pet_settings.num_pets.get()
+                auto_return = playerDetection_settings.auto_return.get()
+                
                 now = time.time()
                 if auto_feed and now - last_fed > 1200 / num_pets:
                     press(self.config['Feed pet'], 1)
                     last_fed = now
+                    
+                if config.need_return and auto_return:
+                    press(self.config['Return scroll'], 2)
+                    self.notifier._alert('perfectNight')
 
                 # Highlight the current Point
                 config.gui.view.routine.select(config.routine.index)
@@ -117,12 +127,11 @@ class Bot(Configurable):
         move(*self.rune_pos).execute()
         adjust = self.command_book['adjust']
         adjust(*self.rune_pos).execute()
-        time.sleep(0.2)
+        time.sleep(1)
         press(self.config['Interact'], 1, down_time=0.2)        # Inherited from Configurable
 
         print('\nSolving rune:')
-        # inferences = []
-        for _ in range(15):
+        for i in range(0, 50):
             frame = config.capture.frame
             solution = detection.merge_detection(model, frame)
             if solution is not None:
@@ -147,34 +156,10 @@ class Bot(Configurable):
                             click(target, button='right')
                             
                     self.rune_active = False
+                    print('i == ', str(i))
                     break
-                # else:
-                #     print('arrow len: ' + str(len(solution)))
-
-            
-                
-                # if solution in inferences:
-                #     print('Solution found, entering result')
-                #     for arrow in solution:
-                #         press(arrow, 1, down_time=0.1)
-                #     time.sleep(1)
-                #     for _ in range(3):
-                #         time.sleep(0.3)
-                #         frame = config.capture.frame
-                #         rune_buff = utils.multi_match(frame[:frame.shape[0] // 8, :],
-                #                                       RUNE_BUFF_TEMPLATE,
-                #                                       threshold=0.9)
-                #         if rune_buff:
-                #             rune_buff_pos = min(rune_buff, key=lambda p: p[0])
-                #             target = (
-                #                 round(rune_buff_pos[0] + config.capture.window['left']),
-                #                 round(rune_buff_pos[1] + config.capture.window['top'])
-                #             )
-                #             click(target, button='right')
-                #     self.rune_active = False
-                #     break
-                # elif len(solution) == 4:
-                #     inferences.append(solution)
+        if self.rune_active == True:
+            self.notifier._ping('rune_error')
 
     def load_commands(self, file):
         try:

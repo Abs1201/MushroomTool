@@ -10,7 +10,6 @@ import numpy as np
 import keyboard as kb
 from src.routine.components import Point
 
-
 # A rune's symbol on the minimap
 RUNE_RANGES = (
     ((141, 148, 245), (146, 158, 255)),
@@ -47,7 +46,7 @@ class Notifier:
         self.thread.daemon = True
 
         self.room_change_threshold = 0.9
-        self.rune_alert_delay = 100         # 4.5 minutes -> 50sec
+        self.rune_alert_delay = 180         # 4.5 minutes -> 180sec
 
     def start(self):
         """Starts this Notifier's thread."""
@@ -59,6 +58,8 @@ class Notifier:
         self.ready = True
         prev_others = 0
         rune_start_time = time.time()
+        self.others_time = 0
+        # config.need_return = False
         while True:
             if config.enabled:
                 frame = config.capture.frame
@@ -68,22 +69,29 @@ class Notifier:
                 # Check for unexpected black screen
                 gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
                 if np.count_nonzero(gray < 15) / height / width > self.room_change_threshold:
-                    self._alert('siren')
+                    self._alert('siren_important', 1)
 
                 # Check for elite warning
                 elite_frame = frame[height // 4:3 * height // 4, width // 4:3 * width // 4]
                 elite = utils.multi_match(elite_frame, ELITE_TEMPLATE, threshold=0.9)
                 if len(elite) > 0:
-                    self._ping('eliteBoss')
+                    self._ping('eliteBoss', 0.25)
 
                 # Check for other players entering the map
                 filtered = utils.filter_color(minimap, OTHER_RANGES)
                 others = len(utils.multi_match(filtered, OTHER_TEMPLATE, threshold=0.5))
                 config.stage_fright = others > 0
+                if config.stage_fright:
+                    now = time.time()
+                    if now - self.others_time > 10:
+                        config.need_return = True
+                        
                 if others != prev_others:
                     if others > prev_others:
-                        self._ping('ding')
+                        self._ping('ding', 0.75)
+                        self.others_time = time.time()
                     prev_others = others
+                    
 
                 # Check for rune
                 now = time.time()
@@ -98,7 +106,7 @@ class Notifier:
                         index = np.argmin(distances)
                         config.bot.rune_closest_pos = config.routine[index].location
                         config.bot.rune_active = True
-                        self._ping('15 minute', volume=0.5)
+                        self._ping('15 minute', volume=0.25)
                 elif now - rune_start_time > self.rune_alert_delay:     # Alert if rune hasn't been solved
                     config.bot.rune_active = False
                     self._alert('siren')
