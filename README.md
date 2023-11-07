@@ -3,9 +3,9 @@
 </h1>
 
 Auto Maple is an intelligent Python bot that plays MapleStory, a 2D side-scrolling MMORPG, using simulated key presses, TensorFlow machine learning, OpenCV template matching, and other computer vision techniques.
-
+<!--
 Community-created resources, such as **command books** for each class and **routines** for each map, can be found in the **[resources repository](https://github.com/tanjeffreyz/auto-maple-resources)**.
-
+-->
 <br>
 
 
@@ -18,9 +18,11 @@ Community-created resources, such as **command books** for each class and **rout
     <td>
 Auto Maple uses <b>OpenCV template matching</b> to determine the bounds of the minimap as well as the various elements within it, allowing it to accurately track the player's in-game position. If <code>record_layout</code> is set to <code>True</code>, Auto Maple will record the player's previous positions in a <b>quadtree-based</b> Layout object, which is periodically saved to a file in the "layouts" directory. Every time a new routine is loaded, its corresponding layout file, if it exists, will also be loaded. This Layout object uses the <b>A* search algorithm</b> on its stored points to calculate the shortest path from the player to any target location, which can dramatically improve the accuracy and speed at which routines are executed.
     </td>
+    <!--
     <td align="center" width="400px">
       <img align="center" src="https://user-images.githubusercontent.com/69165598/123177212-b16f0700-d439-11eb-8a21-8b414273f1e1.gif"/>
     </td>
+    -->
   </tr>
 </table>
 
@@ -36,14 +38,15 @@ Auto Maple uses <b>OpenCV template matching</b> to determine the bounds of the m
 <h2 align="center">
   Command Books
 </h2>
-
+<!--
 <p align="center">
   <img src="https://user-images.githubusercontent.com/69165598/123372905-502e5d00-d539-11eb-81c2-46b8bbf929cc.gif" width="100%"/>
   <br>
   <sub>
     The above video shows Auto Maple consistently performing a mechanically advanced ability combination.
   </sub>
-</p>
+</p
+-->
   
 <table align="center" border="0">
   <tr>
@@ -68,6 +71,7 @@ Designed with modularity in mind, Auto Maple can operate any character in the ga
 <table align="center" border="0">
   <tr>
     <td width="350px">
+      <!--
       <p align="center">
         <img src="https://user-images.githubusercontent.com/69165598/150469699-d8a94ab4-7d70-49c3-8736-a9018996f39a.png"/>
         <br>
@@ -75,6 +79,7 @@ Designed with modularity in mind, Auto Maple can operate any character in the ga
           Click <a href="https://github.com/tanjeffreyz02/auto-maple/blob/f13d87c98e9344e0a4fa5c6f85ffb7e66860afc0/routines/dcup2.csv">here</a> to view the entire routine.
         </sub>
       </p>
+      -->
     </td>
     <td>
 A routine is a user-created CSV file that tells Auto Maple where to move and what commands to use at each location. A custom compiler within Auto Maple parses through the selected routine and converts it into a list of <code>Component</code> objects that can then be executed by the program. An error message is printed for every line that contains invalid parameters, and those lines are ignored during the conversion. 
@@ -122,9 +127,11 @@ Below is a summary of the most commonly used routine components:
   Runes
 </h2>
 
+<!--
 <p align="center">
   <img src="https://user-images.githubusercontent.com/69165598/123479558-f61fad00-d5b5-11eb-914c-8f002a96dd62.gif" width="100%"/>
 </p>
+-->
 
 <table align="center" border="0">
   <tr>
