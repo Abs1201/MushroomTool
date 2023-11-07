@@ -11,7 +11,7 @@ from datetime import datetime
 
 class Listener(Configurable):
     DEFAULT_CONFIG = {
-        'Start/stop': 'insert',
+        'Start/stop': 'f9',
         'Reload routine': 'f6',
         'Record position': 'f7'
     }
