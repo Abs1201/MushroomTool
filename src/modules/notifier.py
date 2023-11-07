@@ -59,7 +59,7 @@ class Notifier:
         prev_others = 0
         rune_start_time = time.time()
         self.others_time = 0
-        # config.need_return = False
+        config.need_return = False
         while True:
             if config.enabled:
                 frame = config.capture.frame
@@ -81,16 +81,17 @@ class Notifier:
                 filtered = utils.filter_color(minimap, OTHER_RANGES)
                 others = len(utils.multi_match(filtered, OTHER_TEMPLATE, threshold=0.5))
                 config.stage_fright = others > 0
-                if config.stage_fright:
-                    now = time.time()
-                    if now - self.others_time > 10:
-                        config.need_return = True
-                        
                 if others != prev_others:
                     if others > prev_others:
                         self._ping('ding', 0.75)
                         self.others_time = time.time()
                     prev_others = others
+                if config.stage_fright:
+                    now = time.time()
+                    if now - self.others_time > 15:
+                        config.need_return = True
+                        
+                
                     
 
                 # Check for rune

@@ -91,7 +91,7 @@ class Listener(Configurable):
         Listener.recalibrate_minimap()
 
         config.routine.load(config.routine.path)
-
+        config.need_return = False
         winsound.Beep(523, 200)     # C5
         winsound.Beep(659, 200)     # E5
         winsound.Beep(784, 200)     # G5
