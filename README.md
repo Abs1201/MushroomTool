@@ -181,7 +181,12 @@ Auto Maple has the ability to automatically solve "runes", or in-game arrow key 
     Download and install <a href="https://www.python.org/downloads/">Python3</a>.
   </li>
   <li>
-    Download and install the latest version of <a href="https://developer.nvidia.com/cuda-downloads">CUDA Toolkit</a>.
+    If Nvidia GPU, Download and install the latest version of <a href="https://developer.nvidia.com/cuda-downloads">CUDA Toolkit</a>.
+  </li>
+  <li>
+    If AMD GPU, download <a href="https://learn.microsoft.com/en-us/windows/ai/directml/gpu-tensorflow-plugin"> DirectML</a>.
+    <pre><code>pip install tensorflow-cpu==2.10</code></pre>
+    <pre><code>pip install tensorflow-directml-plugin</code></pre>
   </li>
   <li>
     Download and install <a href="https://git-scm.com/download/win">Git</a>.
