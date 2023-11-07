@@ -47,6 +47,8 @@ class Notifier:
 
         self.room_change_threshold = 0.9
         self.rune_alert_delay = 180         # 4.5 minutes -> 180sec
+        config.need_return = False
+        self.haveOthers = False
 
     def start(self):
         """Starts this Notifier's thread."""
@@ -60,6 +62,8 @@ class Notifier:
         rune_start_time = time.time()
         self.others_time = 0
         config.need_return = False
+        config.have_others = False
+        
         while True:
             if config.enabled:
                 frame = config.capture.frame
@@ -81,19 +85,25 @@ class Notifier:
                 filtered = utils.filter_color(minimap, OTHER_RANGES)
                 others = len(utils.multi_match(filtered, OTHER_TEMPLATE, threshold=0.5))
                 config.stage_fright = others > 0
-                if others != prev_others:
-                    if others > prev_others:
-                        self._ping('ding', 0.75)
-                        self.others_time = time.time()
-                    prev_others = others
-                if config.stage_fright:
-                    now = time.time()
-                    if now - self.others_time > 15:
-                        config.need_return = True
-                        
+                # if others != prev_others:
+                #     if others > prev_others:
+                #         self._ping('ding', 0.75)
+                #         self.others_time = time.time()
+                #     prev_others = others
                 
-                    
-
+                if config.stage_fright and not config.have_others:
+                    self._ping('ding', 0.75)
+                    self.others_time = time.time()
+                    config.have_others = True
+                
+                if config.have_others:
+                    now = time.time()
+                    if now - self.others_time > 10:
+                        if config.stage_fright:
+                            config.need_return = True
+                        else:
+                            config.have_others = False
+                            
                 # Check for rune
                 now = time.time()
                 if not config.bot.rune_active:

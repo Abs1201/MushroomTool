@@ -73,6 +73,8 @@ class Listener(Configurable):
 
         config.bot.rune_active = False
         config.need_return = False
+        config.have_others = False
+        config.ccing = False
 
         if not config.enabled:
             Listener.recalibrate_minimap()      # Recalibrate only when being enabled.
@@ -89,9 +91,11 @@ class Listener(Configurable):
     @staticmethod
     def reload_routine():
         Listener.recalibrate_minimap()
+        config.need_return = False
+        config.have_others = False
+        config.ccing = False
 
         config.routine.load(config.routine.path)
-        config.need_return = False
         winsound.Beep(523, 200)     # C5
         winsound.Beep(659, 200)     # E5
         winsound.Beep(784, 200)     # G5

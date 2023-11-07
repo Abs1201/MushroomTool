@@ -46,3 +46,7 @@ gui = None
 
 # Shares return boolean to all.
 need_return = False
+have_others = False
+
+#cc
+ccing = False

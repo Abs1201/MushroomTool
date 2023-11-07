@@ -17,6 +17,7 @@ from src.routine.components import Point
 from src.common.vkeys import press, click
 from src.common.interfaces import Configurable
 from src.modules.notifier import Notifier
+import random
 
 
 # The rune's buff icon
@@ -81,6 +82,7 @@ class Bot(Configurable):
         self.ready = True
         config.listener.enabled = True
         last_fed = time.time()
+        last_cc = time.time()
         while True:
             if config.enabled and len(config.routine) > 0:
                 # Buff and feed pets and auto_return
@@ -98,7 +100,16 @@ class Bot(Configurable):
                     
                 if config.need_return and auto_return:
                     press(self.config['Return scroll'], 2)
+                    self._cc()
                     self.notifier._alert('perfectNight')
+                
+                # if now - last_cc > 10:
+                #     time.sleep(5)
+                #     self._cc()
+                #     last_cc = now
+                #     while config.stage_fright or config.bot.rune_active:
+                #         self._cc()
+                #     config.ccing = False
 
                 # Highlight the current Point
                 config.gui.view.routine.select(config.routine.index)
@@ -114,6 +125,20 @@ class Bot(Configurable):
             else:
                 time.sleep(0.01)
 
+    # @utils.run_if_enabled
+    # def _cc(self):
+    #     config.ccing = True
+    #     time.sleep(3)
+    #     press('f4', 3)  #todo
+    #     time.sleep(1)
+    #     press('up', random.randrange(1,5))
+    #     time.sleep(1)
+    #     press('left', random.randrange(1,5))
+    #     time.sleep(1)
+    #     press('enter', 1)
+    #     time.sleep(3)
+        
+        
     @utils.run_if_enabled
     def _solve_rune(self, model):
         """
