@@ -110,6 +110,7 @@ class Bot(Configurable):
                 #     while config.stage_fright or config.bot.rune_active:
                 #         self._cc()
                 #     config.ccing = False
+                #testmain
 
                 # Highlight the current Point
                 config.gui.view.routine.select(config.routine.index)
