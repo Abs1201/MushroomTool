@@ -103,13 +103,13 @@ class Bot(Configurable):
                     self._cc()
                     self.notifier._alert('perfectNight')
                 
-                if now - last_cc > 10:
-                    time.sleep(5)
-                    self._cc()
-                    last_cc = now
-                    while config.stage_fright or config.bot.rune_active:
-                        self._cc()
-                    config.ccing = False
+                # if now - last_cc > 10:
+                #     time.sleep(5)
+                #     self._cc()
+                #     last_cc = now
+                #     while config.stage_fright or config.bot.rune_active:
+                #         self._cc()
+                #     config.ccing = False
 
                 # Highlight the current Point
                 config.gui.view.routine.select(config.routine.index)
