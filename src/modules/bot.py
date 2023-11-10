@@ -30,7 +30,9 @@ class Bot(Configurable):
     DEFAULT_CONFIG = {
         'Interact': 'space',
         'Feed pet': '.',
-        'Return scroll' : 's',
+        'Return scroll' : 'b',
+        'cc' : 'f4',
+        'Decent Mystic Door' : '5'
     }
 
     def __init__(self):
@@ -44,6 +46,9 @@ class Bot(Configurable):
         self.rune_closest_pos = (0, 0)      # Location of the Point closest to rune
         self.submodules = []
         self.command_book = None            # CommandBook instance
+        config.rune_error_count = 0
+        config.ccing_auto = False
+        config.cced = 0
         # self.module_name = None
         # self.buff = components.Buff()
 
@@ -82,16 +87,20 @@ class Bot(Configurable):
         self.ready = True
         config.listener.enabled = True
         last_fed = time.time()
-        last_cc = time.time()
+        config.last_cc = time.time()
+        
         while True:
             if config.enabled and len(config.routine) > 0:
                 # Buff and feed pets and auto_return
                 self.command_book.buff.main()
                 pet_settings = config.gui.settings.pets
                 playerDetection_settings = config.gui.settings.playerDetection
+                autocc_settings = config.gui.settings.autocc
+                
                 auto_feed = pet_settings.auto_feed.get()
                 num_pets = pet_settings.num_pets.get()
                 auto_return = playerDetection_settings.auto_return.get()
+                autocc = autocc_settings.autocc.get()
                 
                 now = time.time()
                 if auto_feed and now - last_fed > 1200 / num_pets:
@@ -100,17 +109,31 @@ class Bot(Configurable):
                     
                 if config.need_return and auto_return:
                     press(self.config['Return scroll'], 2)
-                    self._cc()
+                    self._cc_grind()
                     self.notifier._alert('perfectNight')
                 
-                # if now - last_cc > 10:
-                #     time.sleep(5)
-                #     self._cc()
-                #     last_cc = now
-                #     while config.stage_fright or config.bot.rune_active:
+                #TODO CC
+                # if now - config.last_cc > 60 and autocc: # > 2400
+                #     print('auto cc after 40min grind')
+                #     self._cc_grind()
+                #     config.cced += 1
+                #     print('cced: ' + str(config.cced))
+                #     config.last_cc = now
+                #     config.ccing_auto = True
+                # if config.ccing_auto:
+                #     if config.cced > 3: # > 20
+                #         press(self.config['Return scroll'], 2)
+                #         self.notifier._alert('perfectNight')
+                #     elif config.stage_fright or config.bot.rune_active:
                 #         self._cc()
-                #     config.ccing = False
-                #testmain
+                #         config.cced += 1
+                #         print('cced: ' + str(config.cced))
+                #     else:
+                #         config.cced = 0
+                #         config.ccing_auto = False
+                #         print('ccing_auto <- False')
+                # if config.ccing_auto:
+                #     pass
 
                 # Highlight the current Point
                 config.gui.view.routine.select(config.routine.index)
@@ -129,15 +152,28 @@ class Bot(Configurable):
     @utils.run_if_enabled
     def _cc(self):
         config.ccing = True
-        time.sleep(3)
-        press('f4', 3)  #todo
-        time.sleep(1)
+        time.sleep(2)
+        press(self.config['cc'], 3)
         press('up', random.randrange(1,5))
-        time.sleep(1)
         press('left', random.randrange(1,5))
-        time.sleep(1)
         press('enter', 1)
+        #TODO recapture map 
+        time.sleep(4)
+        config.bot.rune_active = False
+        config.listener.reload_routine()
+        time.sleep(2)
+        config.ccing = False
+        
+    @utils.run_if_enabled
+    def _cc_grind(self):
+        config.ccing = True
+        time.sleep(2)
+        press(self.config['Decent Mystic Door'], 3)
+        time.sleep(1.5)
+        press('up', 1)
         time.sleep(3)
+        press('up', 1)
+        self._cc()
         
         
     @utils.run_if_enabled
@@ -186,6 +222,10 @@ class Bot(Configurable):
                     break
         if self.rune_active == True:
             self.notifier._ping('rune_error')
+            config.rune_error_count += 1
+            if config.rune_error_count > 2:
+                pass
+                #todo
 
     def load_commands(self, file):
         try:

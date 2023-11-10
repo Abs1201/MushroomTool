@@ -75,6 +75,10 @@ class Listener(Configurable):
         config.need_return = False
         config.have_others = False
         config.ccing = False
+        config.rune_error_count = 0
+        config.ccing_auto = False
+        config.cced = 0
+        config.last_cc = time.time()
 
         if not config.enabled:
             Listener.recalibrate_minimap()      # Recalibrate only when being enabled.
@@ -94,6 +98,10 @@ class Listener(Configurable):
         config.need_return = False
         config.have_others = False
         config.ccing = False
+        config.rune_error_count = 0
+        config.ccing_auto = False
+        config.cced = 0
+        config.last_cc = time.time()
 
         config.routine.load(config.routine.path)
         winsound.Beep(523, 200)     # C5

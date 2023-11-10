@@ -50,3 +50,7 @@ have_others = False
 
 #cc
 ccing = False
+rune_error_count = 0
+ccing_auto = False
+cced = 0
+last_cc = 0
