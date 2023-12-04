@@ -46,7 +46,8 @@ class Notifier:
         self.thread.daemon = True
 
         self.room_change_threshold = 0.9
-        self.rune_alert_delay = 180         # 4.5 minutes -> 180sec
+        self.rune_alert_delay = 200         # 4.5 minutes -> 180sec
+        self.rune_on_map = 30#700+self.rune_alert_delay # (10+a)min + rune_alert_delay.
         config.need_return = False
         self.haveOthers = False
 
@@ -60,6 +61,7 @@ class Notifier:
         self.ready = True
         prev_others = 0
         rune_start_time = time.time()
+        grind_start_time = time.time()
         self.others_time = 0
         config.need_return = False
         config.have_others = False
@@ -118,10 +120,14 @@ class Notifier:
                         index = np.argmin(distances)
                         config.bot.rune_closest_pos = config.routine[index].location
                         config.bot.rune_active = True
+                        self.grind_start_time = now
                         self._ping('15 minute', volume=0.1)
                 elif now - rune_start_time > self.rune_alert_delay:     # Alert if rune hasn't been solved
                     config.bot.rune_active = False
                     self._alert('siren')
+                elif now - grind_start_time > self.rune_on_map:
+                    self._alert('pefectNight')
+                    
             time.sleep(0.05)
 
     def _alert(self, name, volume=0.75):
