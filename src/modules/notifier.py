@@ -118,7 +118,7 @@ class Notifier:
                         index = np.argmin(distances)
                         config.bot.rune_closest_pos = config.routine[index].location
                         config.bot.rune_active = True
-                        self._ping('15 minute', volume=0.25)
+                        self._ping('15 minute', volume=0.1)
                 elif now - rune_start_time > self.rune_alert_delay:     # Alert if rune hasn't been solved
                     config.bot.rune_active = False
                     self._alert('siren')

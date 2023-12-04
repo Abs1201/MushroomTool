@@ -221,7 +221,7 @@ class Bot(Configurable):
                     print('i == ', str(i))
                     break
         if self.rune_active == True:
-            self.notifier._ping('rune_error')
+            self.notifier._ping('rune_error', 0.1)
             config.rune_error_count += 1
             if config.rune_error_count > 2:
                 pass

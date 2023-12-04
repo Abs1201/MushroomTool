@@ -354,7 +354,7 @@ class Fall(Command):
         while config.enabled and \
                 counter > 0 and \
                 utils.distance(start, config.player_pos) < self.distance:
-            press('end', 1, down_time=0.1)
+            press('a', 1, down_time=0.1)
             counter -= 1
         key_up('down')
         time.sleep(0.05)
