@@ -125,8 +125,8 @@ class Notifier:
                 elif now - rune_start_time > self.rune_alert_delay:     # Alert if rune hasn't been solved
                     config.bot.rune_active = False
                     self._alert('siren')
-                elif now - grind_start_time > self.rune_on_map:
-                    self._alert('pefectNight')
+                # elif now - grind_start_time > self.rune_on_map:
+                #     self._alert('pefectNight')
                     
             time.sleep(0.05)
 
