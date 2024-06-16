@@ -9,6 +9,7 @@ import threading
 import numpy as np
 import keyboard as kb
 from src.routine.components import Point
+from src.common import config
 
 # A rune's symbol on the minimap
 RUNE_RANGES = (
@@ -23,6 +24,9 @@ OTHER_RANGES = (
 )
 other_filtered = utils.filter_color(cv2.imread('assets/other_template.png'), OTHER_RANGES)
 OTHER_TEMPLATE = cv2.cvtColor(other_filtered, cv2.COLOR_BGR2GRAY)
+
+other_filtered2 = utils.filter_color(cv2.imread('assets/other_template2.png'), OTHER_RANGES)
+OTHER_TEMPLATE2 = cv2.cvtColor(other_filtered2, cv2.COLOR_BGR2GRAY)
 
 # The Elite Boss's warning sign
 ELITE_TEMPLATE = cv2.imread('assets/elite_template.jpg', 0)
@@ -46,7 +50,7 @@ class Notifier:
         self.thread.daemon = True
 
         self.room_change_threshold = 0.9
-        self.rune_alert_delay = 200         # 4.5 minutes -> 180sec
+        self.rune_alert_delay = 250         # 4.5 minutes -> 180sec
         self.rune_on_map = 30#700+self.rune_alert_delay # (10+a)min + rune_alert_delay.
         config.need_return = False
         self.haveOthers = False
@@ -87,14 +91,20 @@ class Notifier:
                 # Check for other players entering the map
                 filtered = utils.filter_color(minimap, OTHER_RANGES)
                 others = len(utils.multi_match(filtered, OTHER_TEMPLATE, threshold=0.5))
-                config.stage_fright = others > 0
+                # others2 = len(utils.multi_match(filtered, OTHER_TEMPLATE2, threshold=0.5))
+                
                 # if others != prev_others:
                 #     if others > prev_others:
                 #         self._ping('ding', 0.75)
                 #         self.others_time = time.time()
                 #     prev_others = others
                 
-                if config.stage_fright and not config.have_others:
+                playerDetection_settings = config.gui.settings.playerDetection
+                auto_return = playerDetection_settings.auto_return.get()
+                
+                config.stage_fright = (others > 0) and auto_return
+                
+                if config.stage_fright and not config.have_others and auto_return:
                     self._ping('ding', 0.75)
                     self.others_time = time.time()
                     config.have_others = True

@@ -109,7 +109,7 @@ class Bot(Configurable):
                     
                 if config.need_return and auto_return:
                     press(self.config['Return scroll'], 2)
-                    self._cc_grind()
+                    # self._cc_grind()
                     self.notifier._alert('perfectNight')
                 
                 #TODO CC
